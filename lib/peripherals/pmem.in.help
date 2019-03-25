@@ -1,0 +1,8 @@
+Enable Scratch-pad Memory
+CONFIG_PMEM_EN
+  Say Y to enable tightly-coupled data memory implementation.
+
+Scratch-pad Memory Size
+CONFIG_PMEM_SIZE_1
+  Set the tightly-coupled data memory size.
+

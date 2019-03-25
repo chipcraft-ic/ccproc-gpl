@@ -1,0 +1,211 @@
+ifndef CCRV32_HOME
+  $(error Define CCRV32_HOME variable, eg.: $(HOME)/ccrv32!)
+endif
+
+ifndef RISCV
+  $(error Define RISCV variable, eg.: $(CCRV32_HOME)/toolchain!)
+endif
+
+CCRV32_HOME     ?=  $(HOME)/CCsoftware/ccrv32
+RISCV           ?=  $(CCRV32_HOME)/toolchain
+
+GCC             ?=  gcc
+TKCONFIG        ?=  $(CCPROC_HOME)/bin/tkconfig
+
+XLEN            ?=  32
+
+RISCV_PREFIX    ?=  riscv$(XLEN)-unknown-elf-
+RISCV_OBJCOPY   ?=  $(RISCV_PREFIX)objcopy
+RISCV_OBJDUMP   ?=  $(RISCV_PREFIX)objdump
+
+SREC_SIZE       ?=  128
+
+# ------------------------------------------------------------------------------------
+# riscv-tests
+# ------------------------------------------------------------------------------------
+
+include $(CCRV32_HOME)/riscv-repos/riscv-tests/isa/rv32ui/Makefrag
+include $(CCRV32_HOME)/riscv-repos/riscv-tests/isa/rv32um/Makefrag
+include $(CCRV32_HOME)/riscv-repos/riscv-tests/isa/rv32mi/Makefrag
+
+RISCV_TESTS             =   $(rv32ui_p_tests) $(rv32um_p_tests) $(rv32mi_p_tests)
+RISCV_TESTS_FILE        =   $(CCPROC_HOME)/verif/tests/riscv-tests.list
+
+rv32%:
+	@make memgen.exe
+	cd $(CCRV32_HOME)/riscv-repos/riscv-tests/isa     && \
+	make XLEN=$(XLEN) $@                              && \
+	make XLEN=$(XLEN) $@.dump                         && \
+	$(RISCV_OBJCOPY) -O srec $@ mem.srec
+	cp $(CCRV32_HOME)/riscv-repos/riscv-tests/isa/$@.dump $@.dump
+	./memgen.exe $(CCRV32_HOME)/riscv-repos/riscv-tests/isa/mem.srec -eL -s$(SREC_SIZE) > mem.hex
+
+# ------------------------------------------------------------------------------------
+# riscv-compliance
+# ------------------------------------------------------------------------------------
+
+include $(CCRV32_HOME)/riscv-repos/riscv-compliance/riscv-test-suite/rv32i/Makefrag
+include $(CCRV32_HOME)/riscv-repos/riscv-compliance/riscv-test-suite/rv32im/Makefrag
+include $(CCRV32_HOME)/riscv-repos/riscv-compliance/riscv-test-suite/rv32mi/Makefrag
+include $(CCRV32_HOME)/riscv-repos/riscv-compliance/riscv-test-suite/rv32ui/Makefrag
+
+RISCV_COMPLIANCE_LIST           =   rv32i rv32im rv32mi rv32ui
+
+RISCV_COMPLIANCE                =   riscv-compliance
+RISCV_COMPLIANCE_DIR            =   $(CCRV32_HOME)/riscv-repos/$(RISCV_COMPLIANCE)
+RISCV_COMPLIANCE_HEADER         =   $(CCPROC_HOME)/verif/tests/$(RISCV_COMPLIANCE)
+RISCV_COMPLIANCE_FILE           =   $(RISCV_COMPLIANCE_HEADER)-$(RISCV_COMPLIANCE_DEVICE)
+RISCV_COMPLIANCE_DEVICE         ?=  rv32i
+
+%.elf:
+	@make memgen.exe
+	@cd $(RISCV_COMPLIANCE_DIR)/riscv-test-suite/$(RISCV_COMPLIANCE_DEVICE)                                                                                             && \
+	perl -nE 'say reverse /(..)/g' references/$(subst .elf,,$@).reference_output > ccrv32_reference_output.rev                                                          && \
+	xxd -r -p ccrv32_reference_output.rev > ccrv32_reference_output.bin                                                                                                 && \
+	make ROOTDIR=$(RISCV_COMPLIANCE_DIR) TARGETDIR=$(CCRV32_HOME)/riscv-target XLEN=$(XLEN) RISCV_TARGET=ccrv32 RISCV_DEVICE=$(RISCV_COMPLIANCE_DEVICE) $@     && \
+	$(RISCV_OBJCOPY) -O srec $(RISCV_COMPLIANCE_DIR)/work/$@ mem.srec
+	cp $(CCRV32_HOME)/riscv-repos/riscv-compliance/work/$@.objdump $@.objdump
+	./memgen.exe $(RISCV_COMPLIANCE_DIR)/riscv-test-suite/$(RISCV_COMPLIANCE_DEVICE)/mem.srec -eL -s$(SREC_SIZE) > mem.hex
+
+# ------------------------------------------------------------------------------------
+# common
+# ------------------------------------------------------------------------------------
+
+memgen.exe:
+	$(GCC) -g $(TKCONFIG)/memgen.c -o memgen.exe
+	chmod +x memgen.exe
+
+
+
+# ------------------------------------------------------------------------------------
+# run riscv-tests
+# ------------------------------------------------------------------------------------
+
+riscv-tests: memgen.exe
+	@rm -f $(RISCV_TESTS_FILE)
+	@for i in $(RISCV_TESTS); do \
+		echo make $$i >> $(RISCV_TESTS_FILE) ;\
+	done
+	@make CCPROC_TESTS_LIST=$(RISCV_TESTS_FILE) TESTS_LOG_FILE=logs/riscv-tests.log $(PROGPARAMS)
+	@tail -15 logs/riscv-tests.log > logs/riscv-tests-sum.log
+
+irun-riscv-tests:
+	@make PROGPARAMS="irun-tests" riscv-tests
+
+ncsim-riscv-tests:
+	@make PROGPARAMS="ncsim-tests" riscv-tests
+
+vsim-riscv-tests:
+	@make PROGPARAMS="vsim-tests" riscv-tests
+
+iveri-riscv-tests:
+	@make PROGPARAMS="iveri-tests" riscv-tests
+
+vlsim-riscv-tests:
+	@make PROGPARAMS="vlsim-tests" riscv-tests
+
+
+
+# ------------------------------------------------------------------------------------
+# run riscv-compliance
+# ------------------------------------------------------------------------------------
+
+riscv-compliance: memgen.exe
+	@for isa in $(RISCV_COMPLIANCE_LIST); do \
+		make RISCV_COMPLIANCE_DEVICE=$${isa} PROGPARAMS=$(PROGPARAMS) riscv-part ;\
+	done
+
+riscv-part:
+	@rm -f $(RISCV_COMPLIANCE_FILE).list
+	@echo $(RISCV_COMPLIANCE_DEVICE)
+	@for i in $($(RISCV_COMPLIANCE_DEVICE)_tests); do \
+		echo make RISCV_COMPLIANCE_DEVICE=$(RISCV_COMPLIANCE_DEVICE) $$i >> $(RISCV_COMPLIANCE_FILE).list ;\
+	done
+	@make CCPROC_TESTS_LIST=$(RISCV_COMPLIANCE_FILE).list TESTS_LOG_FILE=logs/$(RISCV_COMPLIANCE)-$(RISCV_COMPLIANCE_DEVICE).log $(PROGPARAMS)
+	@tail -15 logs/$(RISCV_COMPLIANCE)-$(RISCV_COMPLIANCE_DEVICE).log > logs/$(RISCV_COMPLIANCE)-$(RISCV_COMPLIANCE_DEVICE)-sum.log
+
+irun-riscv-compliance:
+	@make PROGPARAMS="irun-tests" riscv-compliance
+
+ncsim-riscv-compliance:
+	@make PROGPARAMS="ncsim-tests" riscv-compliance
+
+iveri-riscv-compliance:
+	@make PROGPARAMS="iveri-tests" riscv-compliance
+
+vlsim-riscv-compliance:
+	@make PROGPARAMS="vlsim-tests" riscv-compliance
+
+vsim-riscv-compliance:
+	@make PROGPARAMS="vsim-tests" riscv-compliance
+
+
+
+# ------------------------------------------------------------------------------------
+# RTPG
+# ------------------------------------------------------------------------------------
+
+torture-gen:
+	make $(RTPG_ENGINE)-gen ;\
+
+riscv-torture-gen:
+	cd $(CCRV32_HOME)/riscv-torture && make igentest
+
+
+
+# ------------------------------------------------------------------------------------
+# STANDARD CASES
+# ------------------------------------------------------------------------------------
+
+test: memgen.exe
+	cd $(CCRV32_HOME)/tests/$(TEST) && make CCSDK_BOARD=$(CCSDK_BOARD) BUILDDIR=build_$(BUILDDIR) clean all
+	$(RISCV_OBJDUMP) -D $(CCRV32_HOME)/tests/$(TEST)/build_$(BUILDDIR)/$(TEST)-test > $(TEST)_disasm.txt
+	./memgen.exe $(CCRV32_HOME)/tests/$(TEST)/build_$(BUILDDIR)/$(TEST)-test.srec -eL -s$(SREC_SIZE) > mem.hex
+
+bench: memgen.exe
+	cd $(CCRV32_HOME)/benchmarks/$(BENCH) && make CCRV32_BOARD=$(CCRV32_BOARD) BUILDDIR=build_$(BUILDDIR) clean all
+	$(RISCV_OBJDUMP) -D $(CCRV32_HOME)/benchmarks/$(BENCH)/build_$(BUILDDIR)/$(BENCH) > $(BENCH)_disasm.txt
+	./memgen.exe $(CCRV32_HOME)/benchmarks/$(BENCH)/build_$(BUILDDIR)/$(BENCH).srec -eL -s$(SREC_SIZE) > mem.hex
+
+
+# ------------------------------------------------------------------------------------
+# OTHERS
+# ------------------------------------------------------------------------------------
+
+clean-soft:
+	@-rm -rf *.txt *.srec *.o *.coe mem.hex ccproc_*.S *dump
+	@-rm -rf $(RISCV_COMPLIANCE_DIR)/work/*.elf $(RISCV_COMPLIANCE_DIR)/work/*.objdump
+	@-rm $(CCRV32_HOME)/riscv-tests/isa/rv32*
+
+# ------------------------------------------------------------------------------------
+# HELP
+# ------------------------------------------------------------------------------------
+
+help-soft:
+	@echo ""
+	@echo "RISC-V architecture verification:"
+	@echo "  iveri-riscv-tests         - run RISC-V tests using Icarus Verilog"
+	@echo "  vlsim-riscv-tests         - run RISC-V tests using Verilator"
+	@echo "  irun-riscv-tests          - run RISC-V tests using Cadence Incisive Enterprise Simulator"
+	@echo "  ncsim-riscv-tests         - run RISC-V tests using Cadence Incisive Enterprise Simulator"
+	@echo "  vsim-riscv-tests          - run RISC-V tests using Questa Advanced Simulator"
+	@echo "  iveri-riscv-compliance    - run RISC-V compliance tests using Icarus Verilog"
+	@echo "  vlsim-riscv-compliance    - run RISC-V compliance tests using Verilator"
+	@echo "  irun-riscv-compliance     - run RISC-V compliance tests using Cadence Incisive Enterprise Simulator"
+	@echo "  ncsim-riscv-compliance    - run RISC-V compliance tests using Cadence Incisive Enterprise Simulator"
+	@echo "  vsim-riscv-compliance     - run RISC-V compliance tests using Questa Advanced Simulator"
+	@echo ""
+	@echo "Software compilation:"
+	@echo "  bench                     - compile program located in '$(CCRV32_HOME)/benchmarks' localization"
+	@echo "                                e.g. 'make BENCH=dhry bench'"
+	@echo "  example                   - compile program located in '$(CCRV32_HOME)/examples' localization"
+	@echo "                                e.g. 'make EXAMPLE=hello-world example'"
+	@echo "  test                      - compile program located in '$(CCRV32_HOME)/test' localization"
+	@echo "                                e.g. 'make TEST=plic test'"
+	@echo "  rv32xx-x-xxx              - compile program from riscv-tests repository"
+	@echo "                                e.g. 'make rv32ui-p-lb', 'make rv32um-p-div', 'make rv32mi-p-csr'"
+	@echo ""
+	@echo "Software variables:"
+	@echo "  RTPG_ENGINE               - torture engine: csmith (default), yarpgen, riscv-torture"
+	@echo "  RTPG_RUNS                 - number of RTPG runs, default 500"
+	@echo ""

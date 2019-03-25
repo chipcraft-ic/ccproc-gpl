@@ -1,0 +1,16 @@
+Floating Point Unit
+CONFIG_FPU_EN
+  Say Y to enable floating point unit implementation.
+
+Floating Point Modules Number
+CONFIG_FPU_NUM
+  Set the number of floating point modules.
+  If floating point modules number is not equal cores number
+  the configuration tool will try to implement appropriate sharing.
+  The available options are:
+
+  CONFIG_CORE_NUM = 1 x CONFIG_FPU_NUM
+  CONFIG_CORE_NUM = 2 x CONFIG_FPU_NUM
+  CONFIG_CORE_NUM = 3 x CONFIG_FPU_NUM
+  CONFIG_CORE_NUM = 4 x CONFIG_FPU_NUM
+

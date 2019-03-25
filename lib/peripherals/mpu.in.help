@@ -1,0 +1,21 @@
+Memory Protection Unit Enable
+CONFIG_MPU_EN
+  Say Y to enable memory protection unit implementation.
+
+Number Of Execution Regions
+CONFIG_MPU_EXEC_REGIONS
+  Enter the number of implemented MPU regions for program execution.
+  The valid number is between 1 and 8.
+
+Number Of Data Regions
+CONFIG_MPU_DATA_REGIONS
+  Enter the number of implemented MPU regions
+  for processor load and store operations.
+  The valid number is between 1 and 8.
+
+Number Of Peripheral Regions
+CONFIG_MPU_PERIPH_REGIONS
+  Enter the number of implemented MPU regions for load and
+  store operations executed by DMA capable peripherals.
+  The valid number is between 1 and 8.
+

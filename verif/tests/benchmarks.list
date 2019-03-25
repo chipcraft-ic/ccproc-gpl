@@ -1,0 +1,8 @@
+make BENCH=dhry RUNS_NUMBER=200 bench
+make BENCH=coremark ITERATIONS=5 MULTITHREAD=1 bench
+make BENCH=whetstone LOOPS=2 bench
+make BENCH=bitcount ITERATIONS=50 bench
+make BENCH=stringsearch bench
+make BENCH=paranoia bench
+make BENCH=stanford bench
+make BENCH=qsort bench

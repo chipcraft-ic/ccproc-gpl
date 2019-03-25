@@ -1,0 +1,3 @@
+../../lib/OPENCORES/1WIRE/hdl/sockit_owm.v
+../../lib/OPENCORES/1WIRE/hdl/onewire_slave_model.v
+../../lib/OPENCORES/1WIRE/onewire_apb.v

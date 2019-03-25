@@ -1,0 +1,20 @@
+Enable Power Management
+CONFIG_PMNG_EN
+  Say Y to enable power management controller implementation.
+
+Power Management Controller Base Address
+CONFIG_PMNG_BASEADDR
+  Base address (address[27:16]) of power management controller.
+  Do not modify unless necessary.
+
+Power Down Enable
+CONFIG_PMNG_PWD_EN
+  Say Y to enable implementation of power-down feature.
+  Power-down is implemented using clock gating technique.
+
+Clock Scaling Enable
+CONFIG_PMNG_PRESC_EN
+  Say Y to enable implementation of clock scaling interface.
+  Clock scaling is implemented using duty cycle control
+  of integrated clock gating cells.
+

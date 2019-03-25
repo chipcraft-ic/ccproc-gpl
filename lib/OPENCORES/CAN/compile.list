@@ -1,0 +1,13 @@
+../../lib/OPENCORES/CAN/rtl/verilog/can_acf.v
+../../lib/OPENCORES/CAN/rtl/verilog/can_bsp.v
+../../lib/OPENCORES/CAN/rtl/verilog/can_btl.v
+../../lib/OPENCORES/CAN/rtl/verilog/can_crc.v
+../../lib/OPENCORES/CAN/rtl/verilog/can_fifo.v
+../../lib/OPENCORES/CAN/rtl/verilog/can_ibo.v
+../../lib/OPENCORES/CAN/rtl/verilog/can_register_asyn_syn.v
+../../lib/OPENCORES/CAN/rtl/verilog/can_register_asyn.v
+../../lib/OPENCORES/CAN/rtl/verilog/can_register_syn.v
+../../lib/OPENCORES/CAN/rtl/verilog/can_register.v
+../../lib/OPENCORES/CAN/rtl/verilog/can_registers.v
+../../lib/OPENCORES/CAN/rtl/verilog/can_top.v
+../../lib/OPENCORES/CAN/can_apb.v

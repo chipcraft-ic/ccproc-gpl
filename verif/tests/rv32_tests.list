@@ -1,0 +1,37 @@
+make TEST=multicore test
+make TEST=rst test
+make TEST=systick test
+make TEST=plic test
+make TEST=dma test
+make TEST=pwd test
+make TEST=gpio test
+make TEST=rtc test
+make TEST=i2c test
+make TEST=fft test
+make TEST=cpp test
+make TEST=eth ETH_SIM_TEST=1 test
+make TEST=clock test
+make TEST=uart test
+make TEST=spi test
+make BENCH=dhry RUNS_NUMBER=1000 bench
+make BENCH=coremark ITERATIONS=5 MULTITHREAD=1 bench
+make BENCH=whetstone LOOPS=2 bench
+make TEST=mem-map MEM_SIM_TEST=1 test
+make MISC=stress ITERATIONS=5 MULTITHREAD=1 misc
+make MISC=stress ITERATIONS=5 MULTITHREAD=2 misc
+make MISC=stress ITERATIONS=5 MULTITHREAD=3 misc
+make MISC=stress ITERATIONS=5 MULTITHREAD=4 misc
+make MISC=stress ITERATIONS=5 MULTITHREAD=5 misc
+make MISC=stress ITERATIONS=5 MULTITHREAD=6 misc
+make MISC=stress ITERATIONS=5 MULTITHREAD=8 misc
+make MISC=stress ITERATIONS=5 MULTITHREAD=10 misc
+make MISC=stress ITERATIONS=1 MULTITHREAD=1 NO_DMA_STRESS=1 NO_ICACHE_STRESS=1 misc
+make MISC=stress ITERATIONS=2 MULTITHREAD=1 NO_DMA_STRESS=1 NO_DCACHE_STRESS=1 misc
+make MISC=stress ITERATIONS=1 MULTITHREAD=1 NO_DMA_STRESS=1 NO_ICACHE_STRESS=1 NO_DCACHE_STRESS=1 misc
+make MISC=stress ITERATIONS=1 MULTITHREAD=3 NO_DMA_STRESS=1 NO_ICACHE_STRESS=1 misc
+make MISC=stress ITERATIONS=2 MULTITHREAD=3 NO_DMA_STRESS=1 NO_DCACHE_STRESS=1 misc
+make MISC=stress ITERATIONS=1 MULTITHREAD=3 NO_DMA_STRESS=1 NO_ICACHE_STRESS=1 NO_DCACHE_STRESS=1 misc
+make BENCH=coremark ITERATIONS=5 MULTITHREAD=2 bench
+make BENCH=coremark ITERATIONS=5 MULTITHREAD=4 bench
+make BENCH=coremark ITERATIONS=5 MULTITHREAD=6 bench
+make BENCH=coremark ITERATIONS=5 MULTITHREAD=8 bench

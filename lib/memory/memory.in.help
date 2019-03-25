@@ -1,0 +1,64 @@
+Enable Bootloader
+CONFIG_BOOT_EN
+  Say Y if your design does not provide NVM program memory.
+  Bootloader expects to have dataflash connected to SPI0 with
+  chip-select connected to GPIO0.
+
+ROM Memory Start Address Space
+CONFIG_ROM_START
+  Start address (address[31:28]) of ROM memory address space.
+  Do not modify unless necessary.
+
+ROM Memory End Address Space
+CONFIG_ROM_END
+  Last address (address[31:28]) of ROM memory address space.
+  Do not modify unless necessary.
+
+On-Chip ROM Memory Size
+CONFIG_IMEM_0
+  Selects the amount of on-chip ROM memory size. This parameter
+  provides information only about region size not the implementation
+  details e.g. ROM, RAM, embedded FLASH, etc.
+
+RAM Memory Start Address Space
+CONFIG_RAM_START
+  Start address (address[31:28]) of RAM memory address space.
+  Do not modify unless necessary.
+
+RAM Memory End Address Space
+CONFIG_RAM_END
+  Last address (address[31:28]) of RAM memory address space.
+  Do not modify unless necessary.
+
+On-Chip RAM Memory Size
+CONFIG_DMEM_0
+  Selects the amount of on-chip RAM memory size. This parameter
+  provides information only about region size not the implementation
+  details.
+
+External DMA Channels
+CONFIG_DMA_NUM
+  Set the number of external DMA channels (ports) connected to the
+  processor data interconnect. The practical number of channels
+  is between 0 and 8.
+
+Enable DMA Bursts
+CONFIG_DMA_BURST_EN
+  Say Y if bus adapters (AHB, AXI, Wishbone, etc.) connected to the
+  DMA channels utilize bursts transactions. This option may by
+  required in conjunction with other options.
+
+Enable Full Address Implementation.
+CONFIG_FULLADDR_EN
+  If instruction and data address widths resulting from ROM and RAM
+  memories size are lower than 32 bits the processor can implement
+  only necessary FFs and smaller address adders to save space and power.
+  Say N to enable this feature. For the security reasons it is strongly
+  recommended to say Y here.
+
+Enable Load Delay
+CONFIG_RLDEL_EN
+  Say Y to enable additional FFs stage while accessing instruction and
+  data address spaces. This will improve timing. This option may by
+  required in conjunction with other options.
+

@@ -1,0 +1,4 @@
+Stack Protection Enable
+CONFIG_STACK_PROT_EN
+  Say Y to enable implementation of stack protection module.
+

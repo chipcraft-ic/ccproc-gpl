@@ -1,0 +1,5 @@
+mainmenu_option next_comment
+comment 'FPU unit                          '
+    bool 'Enable FPU interface.             ' CONFIG_FPU_EN
+    int  'Number of FPU units.              ' CONFIG_FPU_NUM 1
+endmenu

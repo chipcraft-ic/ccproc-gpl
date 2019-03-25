@@ -1,0 +1,33 @@
+Enable Instruction Cache
+CONFIG_ICACHE_EN
+  Say Y to enable instruction cache implementation.
+
+Instruction Cache Controller Base Address
+CONFIG_ICTRL_BASEADDR
+  Base address (address[27:16]) of instruction cache controller.
+  Do not modify unless necessary.
+
+Instruction Cache Ways
+CONFIG_ICACHE_WAY_1
+  Select the number of instruction cache ways. Selecting 1 will
+  effectively implement direct-mapped cache.
+
+Instruction Cache Way Size
+CONFIG_ICACHE_SIZE_1
+  Select instruction cache way size.
+
+Instruction Cache Line Size
+CONFIG_ILINE_SIZE_0
+  Select instruction cache line size.
+
+Instruction Cache Line Replacement Algorithms.
+CONFIG_ILRR_ALG
+  The selection will take effect only with set-associative cache
+  implementation (more than one cache ways).
+  The available algorithms are:
+
+  Type        Implementation
+  LRR         Least Recently Replaced
+                (requires one additional bit each per line)
+  Random      Pseudo Random Replacement
+

@@ -1,0 +1,9 @@
+mainmenu_option next_comment
+comment 'Power management                  '
+    bool 'Enable Power Management.          ' CONFIG_PMNG_EN
+    if [ "$CONFIG_PMNG_EN" = "y" ]; then
+        hex  'Base address (add[27:16]).        ' CONFIG_PMNG_BASEADDR 02
+        bool 'Power down enable.                ' CONFIG_PMNG_PWD_EN
+        bool 'Clock scaling enable.             ' CONFIG_PMNG_PRESC_EN
+    fi
+endmenu

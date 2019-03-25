@@ -1,0 +1,4 @@
+Multicore Controller Base Address
+CONFIG_MT_BASEADDR
+  Base address (address[27:16]) of multicore controller.
+  Do not modify unless necessary.

@@ -1,0 +1,63 @@
+mainmenu_option next_comment
+comment 'Memory subsystem                    '
+    #choice 'System endianness.                ' \
+    #    "little-endian  CONFIG_BE_0 \
+    #    big-endian      CONFIG_BE_1" big-endian
+    bool 'Enable Bootloader ROM memory.       ' CONFIG_BOOT_EN
+    #if [ "$CONFIG_BOOT_EN" = "y" ]; then
+    #    choice 'Bootloader ROM memory size.         ' \
+    #        "128B     CONFIG_BMEM_1 \
+    #        256B      CONFIG_BMEM_2 \
+    #        512B      CONFIG_BMEM_3 \
+    #        1kB       CONFIG_BMEM_4 \
+    #        2kB       CONFIG_BMEM_5" 256B
+    #    choice 'Bootloader version (emulator only). ' \
+    #        "8MHz    CONFIG_BOOT_1 \
+    #        Virtex6   CONFIG_BOOT_3" 8MHz
+    #fi
+    hex 'ROM memory start address space (add[31:28]). ' CONFIG_ROM_START 0
+    hex 'ROM memory end address space (add[31:28]).   ' CONFIG_ROM_END 1
+    choice 'Main on-chip ROM memory size.     ' \
+        "0kB    CONFIG_IMEM_0 \
+        1kB     CONFIG_IMEM_1 \
+        2kB     CONFIG_IMEM_2 \
+        4kB     CONFIG_IMEM_3 \
+        8kB     CONFIG_IMEM_4 \
+        16kB    CONFIG_IMEM_5 \
+        32kB    CONFIG_IMEM_6 \
+        64kB    CONFIG_IMEM_7 \
+        128kB   CONFIG_IMEM_8 \
+        256kB   CONFIG_IMEM_9 \
+        512kB   CONFIG_IMEM_10 \
+        1MB     CONFIG_IMEM_11 \
+        2MB     CONFIG_IMEM_12 \
+        4MB     CONFIG_IMEM_13" 64kB
+    hex  'RAM memory start address space (add[31:28]). ' CONFIG_RAM_START 4
+    hex  'RAM memory end address space (add[31:28]).   ' CONFIG_RAM_END 7
+    choice 'Main on-chip RAM memory size.     ' \
+        "0kB    CONFIG_DMEM_0 \
+        1kB     CONFIG_DMEM_1 \
+        2kB     CONFIG_DMEM_2 \
+        4kB     CONFIG_DMEM_3 \
+        8kB     CONFIG_DMEM_4 \
+        16kB    CONFIG_DMEM_5 \
+        32kB    CONFIG_DMEM_6 \
+        64kB    CONFIG_DMEM_7 \
+        128kB   CONFIG_DMEM_8 \
+        256kB   CONFIG_DMEM_9 \
+        512kB   CONFIG_DMEM_10 \
+        1MB     CONFIG_DMEM_11" 4kB
+    int  'Data controller DMA channels.       ' CONFIG_DMA_NUM 0
+    bool 'Enable DMA bursts.                  ' CONFIG_DMA_BURST_EN
+    bool 'Enable full address width.          ' CONFIG_FULLADDR_EN
+    bool 'Enable memory load delay.           ' CONFIG_RLDEL_EN
+    #if [ "$CONFIG_RLDEL_EN" = "y" ]; then
+    #    bool 'Multicycle instruction memory.      ' CONFIG_MROM_EN
+    #    bool 'Multicycle data memory.             ' CONFIG_MRAM_EN
+    #fi
+
+    source lib/memory/icache.in
+    source lib/memory/dcache.in
+    source lib/MBIST/mbist.in
+
+endmenu

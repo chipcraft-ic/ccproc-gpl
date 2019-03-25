@@ -1,0 +1,9 @@
+mainmenu_option next_comment
+comment 'Clock cycle counter controller    '
+    if [ "$CONFIG_IRQ_EN" = "y" ]; then
+        bool 'Enable clock cycle counter.                       ' CONFIG_CYCCNT_EN
+        if [ "$CONFIG_CYCCNT_EN" = "y" ]; then
+            int  'Clock cycle counter size.                         ' CONFIG_CYCCNT_SIZE 33
+        fi
+    fi
+endmenu

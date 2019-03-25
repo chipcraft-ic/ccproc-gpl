@@ -1,0 +1,4 @@
+Simulation Clock Frequency
+CONFIG_CLK_06
+  Select the simulation clock generation frequency.
+

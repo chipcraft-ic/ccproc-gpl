@@ -1,0 +1,8 @@
+Target Synthesis Technology
+CONFIG_TARGET_TECH_0
+  Select the target technology to be used during synthesis.
+
+DFT Memory Shadow Logic
+CONFIG_DFT_MEM
+  Say Y to enable implementation of DFT memory shadow logic around block memories.
+

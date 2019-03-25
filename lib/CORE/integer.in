@@ -1,0 +1,29 @@
+mainmenu_option next_comment
+comment 'Integer unit                      '
+    if [ "$CONFIG_ICACHE_EN" = "y" ]; then
+        int 'Number of cores.                  ' CONFIG_CORE_NUM 1
+    fi
+    choice 'Instruction set architecture.     ' \
+        "MIPS-II-ST CONFIG_ISA_0 \
+        RISC-V-LP   CONFIG_ISA_1 \
+        RISC-V-ST   CONFIG_ISA_2 " MIPS-II
+    choice 'Branch prediction scheme.         ' \
+        "branch-always  CONFIG_BP_0 \
+        branch-never    CONFIG_BP_1 \
+        opcode          CONFIG_BP_2 \
+        dynamic         CONFIG_BP_3" branch-always
+    bool 'Enable MUL/DIV unit.              ' CONFIG_MULDIV_EN
+    if [ "$CONFIG_MULDIV_EN" = "y" ]; then
+        choice 'Multiplier scheme.                ' \
+            "16x16  CONFIG_MUL_SCH_0 \
+            32x32   CONFIG_MUL_SCH_1" 16x16
+        #bool 'Enable MMAD unit.                 ' CONFIG_MADD_EN
+    fi
+    bool 'Enable coarse-grain clock gating. ' CONFIG_CGCG_EN
+    bool 'Enable operand isolation.         ' CONFIG_OPIS_EN
+    #bool 'Enable resource sharing.          ' CONFIG_RS_EN
+    bool 'Enable area optimizations.        ' CONFIG_AROPT_EN
+    bool 'Enable fast multiply.             ' CONFIG_FAST_EN
+    bool 'Enable compressed ISA.            ' CONFIG_ISA16_EN
+    bool 'Enable coprocessor interface.     ' CONFIG_COP_EN
+endmenu

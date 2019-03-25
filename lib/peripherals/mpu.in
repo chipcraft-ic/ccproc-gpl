@@ -1,0 +1,12 @@
+mainmenu_option next_comment
+comment 'Memory protection unit            '
+    if [ "$CONFIG_IRQ_EN" = "y" ]; then
+        bool 'Enable MPU.                       ' CONFIG_MPU_EN
+        if [ "$CONFIG_IRQ_EN" = "x" ]; then
+            hex 'Base address (add[27:16]).        ' CONFIG_IRQ_BASEADDR 03
+        fi
+        int 'Number of MPU execution regions.                             ' CONFIG_MPU_EXEC_REGIONS 4
+        int 'Number of MPU core load/store regions.                       ' CONFIG_MPU_DATA_REGIONS 4
+        int 'Number of MPU peripheral load/store regions.                 ' CONFIG_MPU_PERIPH_REGIONS 2
+    fi
+endmenu

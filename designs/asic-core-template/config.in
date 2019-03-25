@@ -1,0 +1,15 @@
+#
+# Configuration written in linux configuration language
+#
+# Written by Krzysztof Marcinek, ChipCraft Sp. z o.o.
+#
+#
+
+mainmenu_name "Template Core Design Configuration"
+
+source lib/synthesis/synthesis.in
+source lib/sim/clock.in
+source lib/CORE/core.in
+source lib/peripherals/peripherals.in
+source lib/debug/debug.in
+source lib/sim/sim.in

@@ -1,0 +1,4 @@
+mainmenu_option next_comment
+comment 'Multicore controller              '
+    hex 'Base address (add[27:16]).           ' CONFIG_MT_BASEADDR 01
+endmenu

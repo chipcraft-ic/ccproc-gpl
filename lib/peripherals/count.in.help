@@ -1,0 +1,9 @@
+Enable Clock Cycle Counter
+CONFIG_CYCCNT_EN
+  Say Y to enable implementation of clock cycle counter.
+
+Clock cycle Counter Size
+CONFIG_CYCCNT_SIZE
+  Enter the number of bits of clock cycle counter.
+  The valid range is between 33 and 64.
+

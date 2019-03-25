@@ -1,0 +1,5 @@
+../../lib/AMBA/COMMON/rtl/DFF_en.v
+../../lib/AMBA/COMMON/rtl/edge_detector.v
+../../lib/AMBA/COMMON/rtl/synchronizer.v
+../../lib/AMBA/COMMON/rtl/ones_counter.v
+../../lib/AMBA/COMMON/rtl/input_filter.v

@@ -1,0 +1,17 @@
+../../lib/sim/uart_baudgen_sim.v
+../../lib/sim/uart_receiver_sim.v
+../../lib/disasm/disasm.v
+../../lib/disasm/mi32_disasm.v
+../../lib/disasm/rv32_disasm.v
+../../lib/disasm/stat.v
+../../lib/memory/tb/dctrl/assertions/dctrl_dma_assertions.sv
+../../lib/AMBA/APB/tb/assertions/amba_apb_assertions.sv
+../../lib/AMBA/AHB/tb/assertions/amba_ahb_assertions.sv
+../../lib/AMBA/AHB/beh/amba_ahb_rom_sim.v
+../../lib/AMBA/AHB/beh/amba_ahb_ram_sim.v
+../../lib/AMBA/AHB/beh/amba_ahb_slave_dma_sim.v
+../../lib/AMBA/AXI/beh/amba_axi_ram_sim.v
+../../lib/AMBA/AXI/beh/amba_axi_rom_sim.v
+../../lib/tech/models/ADESTO/AT45DBXXXD_v2.1.v
+../../lib/tech/models/MICROCHIP/24C00.v
+*_utils.v

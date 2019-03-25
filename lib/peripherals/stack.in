@@ -1,0 +1,9 @@
+mainmenu_option next_comment
+comment 'Stack protection                  '
+    if [ "$CONFIG_IRQ_EN" = "y" ]; then
+        bool 'Enable stack protection.          ' CONFIG_STACK_PROT_EN
+        if [ "$CONFIG_IRQ_EN" = "x" ]; then
+            hex  'Base address (add[27:16]).        ' CONFIG_IRQ_BASEADDR 03
+        fi
+    fi
+endmenu

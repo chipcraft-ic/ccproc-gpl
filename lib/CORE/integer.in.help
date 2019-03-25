@@ -1,0 +1,68 @@
+Simulation Clock Frequency
+CONFIG_CORE_NUM
+  Set the number of cores in the system.
+  The number of cores must be between 1 and 16.
+
+Processor Core Architecture
+CONFIG_ISA_0
+  Processor core ISA and pipeline microarchitecture.
+
+  Type            Implementation
+  MIPS-II-ST      Standard performance 6-stage MIPS-II pipeline
+  RISC-V-LP       Low-power single stage RISC-V pipeline
+  RISC-V-ST       Standard performance 6-stage RISC-V pipeline
+
+Branch Prediction Scheme
+CONFIG_BP_0
+  Processor core branch prediction scheme.
+
+  Type            Implementation
+  branch-always   Predict all branch as taken
+  branch-never    Predict all branches as never taken
+  opcode          Predict branches by instruction opcode:
+                    not-equal - taken
+                    greater   - taken
+                    equal     - not-taken
+                    less      - not-taken
+  dynamic         Dynamic branch prediction (2-bit Saturating Counter)
+
+Multiply and Divide Module
+CONFIG_MULDIV_EN
+  Say Y to enable multiply and divide module implementation.
+
+Multiply Module Scheme
+CONFIG_MUL_SCH_0
+  Multiplication scheme.
+
+  Type        Implementation
+  16x16       Iterative 16x16 multiplier
+  32x32       Single-cycle 32x32 multiplier
+
+Coarse Grain Clock Gating
+CONFIG_CGCG_EN
+  Say Y to enable coarse-grain clock gating.
+
+Operand Isolation
+CONFIG_OPIS_EN
+  Say Y to enable operand isolation.
+
+Area Optimizations
+CONFIG_AROPT_EN
+  In 6-stage pipelines by default ALU and LSU have dedicated adders
+  to improve timing. Say Y to enable core pipeline area optimization
+  and implement one adder for both ALU and LSU.
+
+Fast Multiply
+  CONFIG_FAST_EN
+  Say Y to enable fast 16-bit values multiplication.
+  In 16x16 multiply scheme the core pipeline can detect 16-bit
+  variables and perform single cycle multiply calculation.
+
+Compressed ISA
+  CONFIG_ISA16_EN
+  Say Y to enable 16-bit compressed ISA implementation.
+
+Coprocessor Enable
+  CONFIG_COP_EN
+  Say Y to enable coprocessor implementation.
+

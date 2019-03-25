@@ -1,0 +1,10 @@
+mainmenu_option next_comment
+comment 'Synthesis                         '
+    choice 'Target technology                 ' \
+        "Sim          CONFIG_TARGET_TECH_0 \
+        Virtex6       CONFIG_TARGET_TECH_1 \
+        umc_130nm_ll  CONFIG_TARGET_TECH_2 \
+        hh_110nm_ull  CONFIG_TARGET_TECH_3" Sim
+#    int 'Number of DFT scan chains.        ' CONFIG_DFT_SCAN_NUM 5
+    bool 'Enable DFT memory shadow logic    ' CONFIG_DFT_MEM 0
+endmenu

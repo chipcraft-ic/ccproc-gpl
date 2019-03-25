@@ -1,0 +1,8 @@
+mainmenu_option next_comment
+comment 'Debugging                         '
+    bool 'Enable debug unit.                     ' CONFIG_DEBUG_EN
+    #hex  'Debug address space (add[31:28]).      ' CONFIG_DEBUG_START 9
+    int  'Core baud generator value (val[19:0]). ' CONFIG_CORE_BAUD 20
+    bool 'Enable JTAG unit.                      ' CONFIG_JTAG_EN
+    hex  'JTAG IDCODE (val[31:0]).               ' CONFIG_JTAG_IDCODE 0
+endmenu

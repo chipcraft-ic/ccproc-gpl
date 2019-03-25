@@ -1,0 +1,36 @@
+mainmenu_option next_comment
+comment 'Data Cache                        '
+    bool 'Enable data cache.                ' CONFIG_DCACHE_EN
+    hex 'Base address (add[27:16]).        ' CONFIG_DCTRL_BASEADDR 07
+    if [ "$CONFIG_DCACHE_EN" = "y" ]; then
+        if [ "$CONFIG_DCACHE_IMPL_2" = "n" ]; then
+            choice 'Data cache ways.                  ' \
+                "1     CONFIG_DCACHE_WAY_1 \
+                2      CONFIG_DCACHE_WAY_2 \
+                4      CONFIG_DCACHE_WAY_4" 2
+            choice 'Way size (kbytes/way).            ' \
+                "1kB   CONFIG_DCACHE_SIZE_1 \
+                2kB    CONFIG_DCACHE_SIZE_2 \
+                4kB    CONFIG_DCACHE_SIZE_3 \
+                8kB    CONFIG_DCACHE_SIZE_4 \
+                16kB   CONFIG_DCACHE_SIZE_5 \
+                32kB   CONFIG_DCACHE_SIZE_6 \
+                64kB   CONFIG_DCACHE_SIZE_7 \
+                128kB  CONFIG_DCACHE_SIZE_8" 2
+            choice 'Line size (bytes/line).            ' \
+                "16    CONFIG_DLINE_SIZE_0 \
+                32     CONFIG_DLINE_SIZE_1 \
+                64     CONFIG_DLINE_SIZE_2 \
+                128    CONFIG_DLINE_SIZE_3" 64
+            choice 'Line replace algorithm.            ' \
+                "LRR   CONFIG_DLRR_ALG \
+                Random CONFIG_DRND_ALG" Random
+        fi
+        if [ "$CONFIG_DCACHE_FT_EN" = "n" ]; then
+            choice 'Data cache implementation.         ' \
+                "High-performance   CONFIG_DCACHE_IMPL_0 \
+                High-speed          CONFIG_DCACHE_IMPL_1 \
+                Low-performance     CONFIG_DCACHE_IMPL_2 " High-performance
+        fi
+    fi
+endmenu

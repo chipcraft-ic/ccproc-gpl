@@ -1,0 +1,20 @@
+mainmenu_option next_comment
+comment 'Clock generation                  '
+    choice 'Simulation clock frequency.       ' \
+        "8MHz     CONFIG_CLK_06 \
+        10MHz     CONFIG_CLK_05 \
+        16.7MHz   CONFIG_CLK_04 \
+        20MHz     CONFIG_CLK_03 \
+        25MHz     CONFIG_CLK_02 \
+        50MHz     CONFIG_CLK_01 \
+        62.5MHz   CONFIG_CLK_0 \
+        100MHz    CONFIG_CLK_1 \
+        125MHz    CONFIG_CLK_2 \
+        200MHz    CONFIG_CLK_3 \
+        250MHz    CONFIG_CLK_4 \
+        300MHz    CONFIG_CLK_5 \
+        385MHz    CONFIG_CLK_6 \
+        500MHz    CONFIG_CLK_7 \
+        625MHz    CONFIG_CLK_8 \
+        715MHz    CONFIG_CLK_9" 500MHz
+endmenu

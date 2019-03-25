@@ -1,0 +1,148 @@
+ifndef CCSDK_HOME
+  $(error Define CCSDK_HOME variable, eg.: $(HOME)/ccsdk!)
+endif
+
+GCC                     ?=  gcc
+
+TKCONFIG                ?=  $(CCPROC_HOME)/bin/tkconfig
+
+RTPG_AGATRPG_INC        =   $(CCPROC_HOME)/software/agatrpg
+RTPG_SOFT_PATH          ?=  $(CCPROC_HOME)/software/agatrpg/build
+RTPG_MI16_ENABLE        ?=  1
+
+CCSDK_TRIPLET           ?=  mips-cc-elf
+CCSDK_TOOLCHAIN_DIR     ?=  $(CCSDK_HOME)/toolchain/$(CCSDK_TRIPLET)/bin/
+CCSDK_BOARD             ?=  sim
+
+CCSDK_OD                =   $(CCSDK_TOOLCHAIN_DIR)mips-cc-elf-objdump
+CCSDK_OB                =   $(CCSDK_TOOLCHAIN_DIR)mips-cc-elf-objcopy
+CCSDK_CC                =   $(CCSDK_TOOLCHAIN_DIR)mips-cc-elf-gcc
+CCSDK_LD                =   $(CCSDK_TOOLCHAIN_DIR)mips-cc-elf-ld
+
+CCSDK_CFLAGS            =   -O2 -Wall -mips2 -EB -msoft-float -minterlink-mips16 -mno-check-zero-division -mno-branch-likely
+
+SREC_SIZE               ?=  128
+
+memgen.exe:
+	$(GCC) -g $(TKCONFIG)/memgen.c -o memgen.exe
+	chmod +x memgen.exe
+
+
+
+# ------------------------------------------------------------------------------------
+# REGRESSION
+# ------------------------------------------------------------------------------------
+
+%.failed:
+	./memgen.exe $(CCPROC_HOME)/verif/regression/mi32/$@ -s$(SREC_SIZE) > mem.hex
+
+
+# ------------------------------------------------------------------------------------
+# STANDARD CASES
+# ------------------------------------------------------------------------------------
+
+test: memgen.exe
+	cd $(CCSDK_HOME)/tests/$(TEST) && make CCSDK_BOARD=$(CCSDK_BOARD) BUILDDIR=build_$(BUILDDIR) clean all
+	$(CCSDK_OD) -D $(CCSDK_HOME)/tests/$(TEST)/build_$(BUILDDIR)/$(TEST)-test > $(TEST)_disasm.txt
+	./memgen.exe $(CCSDK_HOME)/tests/$(TEST)/build_$(BUILDDIR)/$(TEST)-test.srec -s$(SREC_SIZE) > mem.hex
+
+example: memgen.exe
+	cd $(CCSDK_HOME)/examples/$(EXAMPLE) && make CCSDK_BOARD=$(CCSDK_BOARD) BUILDDIR=build_$(BUILDDIR) clean all
+	$(CCSDK_OD) -D $(CCSDK_HOME)/examples/$(EXAMPLE)/build_$(BUILDDIR)/$(EXAMPLE) > $(EXAMPLE)_disasm.txt
+	./memgen.exe $(CCSDK_HOME)/examples/$(EXAMPLE)/build_$(BUILDDIR)/$(EXAMPLE).srec -s$(SREC_SIZE) > mem.hex
+
+bench: memgen.exe
+	cd $(CCSDK_HOME)/benchmarks/$(BENCH) && make CCSDK_BOARD=$(CCSDK_BOARD) BUILDDIR=build_$(BUILDDIR) clean all
+	$(CCSDK_OD) -D $(CCSDK_HOME)/benchmarks/$(BENCH)/build_$(BUILDDIR)/$(BENCH) > $(BENCH)_disasm.txt
+	./memgen.exe $(CCSDK_HOME)/benchmarks/$(BENCH)/build_$(BUILDDIR)/$(BENCH).srec -s$(SREC_SIZE) > mem.hex
+
+gnss: memgen.exe
+	cd $(CCSDK_HOME)-tests/gnss-ise/$(GNSS) && make CCSDK_BOARD=$(CCSDK_BOARD) BUILDDIR=build_$(BUILDDIR) clean all
+	$(CCSDK_OD) -D $(CCSDK_HOME)-tests/gnss-ise/$(GNSS)/build_$(BUILDDIR)/$(GNSS) > $(GNSS)_disasm.txt
+	./memgen.exe $(CCSDK_HOME)-tests/gnss-ise/$(GNSS)/build_$(BUILDDIR)/$(GNSS).srec -s$(SREC_SIZE) > mem.hex
+
+misc: memgen.exe
+	cd $(CCSDK_HOME)-tests/misc/$(MISC) && make CCSDK_BOARD=$(CCSDK_BOARD) BUILDDIR=build_$(BUILDDIR) clean all
+	$(CCSDK_OD) -D $(CCSDK_HOME)-tests/misc/$(MISC)/build_$(BUILDDIR)/$(MISC) > $(MISC)_disasm.txt
+	./memgen.exe $(CCSDK_HOME)-tests/misc/$(MISC)/build_$(BUILDDIR)/$(MISC).srec -s$(SREC_SIZE) > mem.hex
+
+
+
+# ------------------------------------------------------------------------------------
+# RTPG
+# ------------------------------------------------------------------------------------
+
+torture-gen:
+	make $(RTPG_ENGINE)-gen
+
+agatrpg-common: memgen.exe
+	@mkdir -p $(RTPG_SOFT_PATH)_$(BUILDDIR)
+	@cd $(RTPG_SOFT_PATH)_$(BUILDDIR) && agatRPG $(RTPG_AGATRPG_INC)/xml/ccproc_core_0.xml $(RTPG_AGATRPG_INC)/xml/ccproc_core_1.xml $(RTPG_AGATRPG_INC)/xml/ccproc_core_2.xml $(RTPG_AGATRPG_INC)/xml/ccproc_core_3.xml
+	@cd $(RTPG_SOFT_PATH)_$(BUILDDIR) && cat ccproc_core_0.S >  agatrpg-test.S
+	@cd $(RTPG_SOFT_PATH)_$(BUILDDIR) && cat ccproc_core_1.S >> agatrpg-test.S
+	@cd $(RTPG_SOFT_PATH)_$(BUILDDIR) && cat ccproc_core_2.S >> agatrpg-test.S
+	@cd $(RTPG_SOFT_PATH)_$(BUILDDIR) && cat ccproc_core_3.S >> agatrpg-test.S
+	@cd $(RTPG_SOFT_PATH)_$(BUILDDIR) && $(CCSDK_CC) -c $(CCSDK_CFLAGS) agatrpg-test.S -DMULTICORE=$(MCORE) -DGNSS=0
+	$(CCSDK_OB) --only-section .text -O srec $(RTPG_SOFT_PATH)_$(BUILDDIR)/agatrpg-test.o agatrpg-test.srec
+	$(CCSDK_OD) -D $(RTPG_SOFT_PATH)_$(BUILDDIR)/agatrpg-test.o > agatrpg-test_disasm.txt
+	./memgen.exe agatrpg-test.srec -s$(SREC_SIZE) > mem.hex
+
+agatrpg-one-core: memgen.exe
+	make MCORE=0 agatrpg-common
+
+agatrpg-multicore: memgen.exe
+	make MCORE=1 agatrpg-common
+
+agatrpg-gen: memgen.exe
+	make agatrpg-multicore
+
+csmith-gen: memgen.exe
+	mkdir -p $(CCPROC_HOME)/software/csmith/csmith_$(BUILDDIR)
+	csmith -o $(CCPROC_HOME)/software/csmith/csmith_$(BUILDDIR)/csmith-test.c
+	cp $(CCPROC_HOME)/software/csmith/Makefile $(CCPROC_HOME)/software/csmith/csmith_$(BUILDDIR)/Makefile
+	cd $(CCPROC_HOME)/software/csmith/csmith_$(BUILDDIR) && make MI16_ENABLE=$(RTPG_MI16_ENABLE) COMMON_DIR=$(CCSDK_HOME)/common BUILDDIR=build clean all
+	$(CCSDK_OD) -D $(CCPROC_HOME)/software/csmith/csmith_$(BUILDDIR)/build/csmith-test > csmith-test_disasm.txt
+	./memgen.exe $(CCPROC_HOME)/software/csmith/csmith_$(BUILDDIR)/build/csmith-test.srec -s$(SREC_SIZE) > mem.hex
+	cat $(CCPROC_HOME)/software/csmith/csmith_$(BUILDDIR)/build/csmith-test.srec > csmith-test.srec
+
+yarpgen-gen: memgen.exe
+	mkdir -p $(CCPROC_HOME)/software/yarpgen/yarpgen_$(BUILDDIR)
+	yarpgen -d $(CCPROC_HOME)/software/yarpgen/yarpgen_$(BUILDDIR)
+	cp $(CCPROC_HOME)/software/yarpgen/Makefile $(CCPROC_HOME)/software/yarpgen/yarpgen_$(BUILDDIR)/Makefile
+	cd $(CCPROC_HOME)/software/yarpgen/yarpgen_$(BUILDDIR) && make MI16_ENABLE=$(RTPG_MI16_ENABLE) COMMON_DIR=$(CCSDK_HOME)/common BUILDDIR=build clean all
+	$(CCSDK_OD) -D $(CCPROC_HOME)/software/yarpgen/yarpgen_$(BUILDDIR)/build/yarpgen-test > yarpgen-test_disasm.txt
+	./memgen.exe $(CCPROC_HOME)/software/yarpgen/yarpgen_$(BUILDDIR)/build/yarpgen-test.srec -s$(SREC_SIZE) > mem.hex
+	cat $(CCPROC_HOME)/software/yarpgen/yarpgen_$(BUILDDIR)/build/yarpgen-test.srec > yarpgen-test.srec
+
+
+
+# ------------------------------------------------------------------------------------
+# OTHERS
+# ------------------------------------------------------------------------------------
+
+ccsdk-symlink:
+	rm -f $(CCSDK_HOME)/source/ccsim/obj_dir
+	ln -s $(CCPROC_HOME)/designs/simulator/obj_dir $(CCSDK_HOME)/source/ccsim/obj_dir
+
+clean-soft:
+	-rm -rf *.txt *.srec *.o *.coe mem.hex ccproc_*.S
+
+# ------------------------------------------------------------------------------------
+# HELP
+# ------------------------------------------------------------------------------------
+
+help-soft:
+	@echo ""
+	@echo "Software compilation:"
+	@echo "  bench                     - compile program located in '$(CCSDK_HOME)/benchmarks' localization"
+	@echo "                                e.g. 'make BENCH=dhry bench'"
+	@echo "  example                   - compile program located in '$(CCSDK_HOME)/examples' localization"
+	@echo "                                e.g. 'make EXAMPLE=hello-world example'"
+	@echo "  test                      - compile program located in '$(CCSDK_HOME)/test' localization"
+	@echo "                                e.g. 'make TEST=isa32 test'"
+	@echo ""
+	@echo "Software variables:"
+	@echo "  RTPG_ENGINE               - torture engine: csmith (default), yarpgen, agatrpg"
+	@echo "  RTPG_RUNS                 - number of RTPG runs, default 500"
+	@echo "  RTPG_MI16_ENABLE          - csmith variable to generate compressed code: 0, 1 (default)"
+	@echo ""

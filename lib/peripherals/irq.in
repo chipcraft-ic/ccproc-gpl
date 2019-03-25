@@ -1,0 +1,16 @@
+mainmenu_option next_comment
+comment 'Interrupt controller              '
+    bool 'Enable Interrupt Controller.      ' CONFIG_IRQ_EN
+    if [ "$CONFIG_IRQ_EN" = "x" ]; then
+        hex 'Base address (add[27:16]).        ' CONFIG_IRQ_BASEADDR 03
+    fi
+    bool 'Enable exception handling.        ' CONFIG_IRQ_EXC_EN
+    if [ "$CONFIG_IRQ_EN" = "y" ]; then
+        #hex  'Base address (add[27:16]).                        ' CONFIG_IRQ_BASEADDR 03
+        #hex  'Reset vector (val[25:0]).                         ' CONFIG_RST_VEC 00
+        #hex  'Interrupt vector (val[25:0]).                     ' CONFIG_IRQ_VEC 0A
+        #hex  'Syscall vector (val[25:0]).                       ' CONFIG_SYS_VEC 0C
+        #hex  'Exception vector (val[25:0]).                     ' CONFIG_EXC_VEC 0E
+        bool 'Enable user mode.                                 ' CONFIG_USER_MODE_EN
+    fi
+endmenu

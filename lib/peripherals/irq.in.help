@@ -1,0 +1,19 @@
+Enable Power Management
+CONFIG_IRQ_EN
+  Say Y to enable power interrupt controller implementation.
+
+Interrupt Controller Base Address
+CONFIG_IRQ_BASEADDR
+  Base address (address[27:16]) of interrupt controller.
+  Do not modify unless necessary.
+
+
+Enable Exception Handling
+CONFIG_IRQ_EXC_EN
+  Say Y to enable exception handling.
+  If not sure say Y.
+
+User Mode Enable
+CONFIG_USER_MODE_EN
+  Say Y to enable user-mode implementation.
+

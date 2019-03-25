@@ -1,0 +1,9 @@
+make RISCV_COMPLIANCE_DEVICE=rv32mi breakpoint.elf
+make RISCV_COMPLIANCE_DEVICE=rv32mi ma_fetch.elf
+make RISCV_COMPLIANCE_DEVICE=rv32mi ma_addr.elf
+make RISCV_COMPLIANCE_DEVICE=rv32mi scall.elf
+make RISCV_COMPLIANCE_DEVICE=rv32mi sbreak.elf
+make RISCV_COMPLIANCE_DEVICE=rv32mi shamt.elf
+make RISCV_COMPLIANCE_DEVICE=rv32mi csr.elf
+make RISCV_COMPLIANCE_DEVICE=rv32mi mcsr.elf
+make RISCV_COMPLIANCE_DEVICE=rv32mi illegal.elf

@@ -1,0 +1,13 @@
+mainmenu_option next_comment
+comment 'Peripherals                       '
+    #hex 'Peripherals address space (add[31:28]). ' CONFIG_PERIPH_START 3
+    source lib/peripherals/mtctrl.in
+    source lib/peripherals/power.in
+    source lib/peripherals/irq.in
+    source lib/peripherals/count.in
+    source lib/peripherals/stack.in
+    source lib/peripherals/mpu.in
+    source lib/peripherals/fft.in
+    source lib/peripherals/pmem.in
+    source lib/peripherals/gnss.in
+endmenu

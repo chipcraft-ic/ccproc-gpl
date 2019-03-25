@@ -1,0 +1,10 @@
+mainmenu_option next_comment
+comment 'Simulation                        '
+    bool 'Enable disassembler unit.         ' CONFIG_DISASM_EN
+    bool 'Show stalled cycles.              ' CONFIG_SHOW_STALL
+    bool 'Print instruction execution time. ' CONFIG_SHOW_TIME
+    bool 'Enable statistics unit.           ' CONFIG_STAT_EN
+    bool 'Enable emulator unit.             ' CONFIG_EMULATOR_EN
+    bool 'Enable zero unknown loads.        ' CONFIG_EMULATOR_ZERO
+    bool 'Enable emulator virtual memory.   ' CONFIG_EMULATOR_VIRT
+endmenu

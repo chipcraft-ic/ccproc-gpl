@@ -1,0 +1,52 @@
+Enable Data Cache
+CONFIG_DCACHE_EN
+  Say Y to enable data cache implementation.
+
+Data Cache Controller Base Address
+CONFIG_DCTRL_BASEADDR
+  Base address (address[27:16]) of data cache controller.
+  Do not modify unless necessary.
+
+Data Cache Ways
+CONFIG_DCACHE_WAY_1
+  Select the number of data cache ways. Selecting 1 will
+  effectively implement direct-mapped cache.
+
+Data Cache Way Size
+CONFIG_DCACHE_SIZE_1
+  Select data cache way size.
+
+Data Cache Line Size
+CONFIG_DLINE_SIZE_0
+  Select data cache line size.
+
+Data Cache Line Replacement Algorithms.
+CONFIG_DLRR_ALG
+  The selection will take effect only with set-associative cache
+  implementation (more than one cache ways).
+  The available algorithms are:
+
+  Type        Implementation
+  LRR         Least Recently Replaced
+                (requires one additional bit each per line)
+  Random      Pseudo Random Replacement
+
+Data Cache Implementation
+CONFIG_DCACHE_IMPL_0
+  Select the data cache implementation.
+  The available option are:
+
+  Type                Implementation
+  High-performance    This implementation uses early calculated
+                      address to read tags memory array. This
+                      allows to detect hit faster but can impact
+                      timing.
+  High-speed          This implementation uses registered address
+                      to read tags memory array. As the result
+                      the timing is improved but 1 clock cycle
+                      stall is introduced to detect hit or miss
+                      condition.
+  Low-performance     The smallest footprint implementation without
+                      actual cache capabilities. Use with AXI or
+                      AHB wrapper when cache is not essential.
+

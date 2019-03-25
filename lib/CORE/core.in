@@ -1,0 +1,8 @@
+mainmenu_option next_comment
+comment 'Processor                         '
+    source lib/CORE/integer.in
+    source lib/FPU/fpu.in
+    source lib/GNSS/gnss.in
+    source lib/memory/memory.in
+    source lib/FT/ft.in
+endmenu
